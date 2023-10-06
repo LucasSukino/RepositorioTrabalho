@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/RepositorioTrabalho/static/css/main.99e4cf39.css",
+    "main.js": "/RepositorioTrabalho/static/js/main.2f7a988a.js",
+    "index.html": "/RepositorioTrabalho/index.html",
+    "main.99e4cf39.css.map": "/RepositorioTrabalho/static/css/main.99e4cf39.css.map",
+    "main.2f7a988a.js.map": "/RepositorioTrabalho/static/js/main.2f7a988a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.99e4cf39.css",
+    "static/js/main.2f7a988a.js"
+  ]
+}
