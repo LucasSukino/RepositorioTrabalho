@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Pagina from "../templates/Pagina";
-import FormCadCategorias from "./formularios/FormCadCategorias";
+import FormCadCategorias from "./formularios/FormCadCategoria";
 import TabelaCategorias from "./tabelas/TabelaCategorias";
 import { Container } from "react-bootstrap";
 import TelaMensagem from "./TelaMensagem";
 
-export default function TelaCadastroCategoria(props){
+export default function TelaCadastroCategorias(props){
     const [exibirFormulario, setExibirFormulario] = useState(false);
     const [listaCategorias, setListaCategorias] = useState([]);
     const [categoriaParaEdicao, setCategoriaParaEdicao] = useState({

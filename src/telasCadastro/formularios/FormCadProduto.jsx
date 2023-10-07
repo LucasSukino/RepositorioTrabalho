@@ -28,43 +28,54 @@ export default function FormCadProduto(props) {
   function manipularSubmissao(e) {
     const form = e.currentTarget;
     if (form.checkValidity()) {
-      // Verifica se o produto com o mesmo ID já existe na lista
-      const produtoExistente = props.listaProdutos.find(
-        (itemProduto) => itemProduto.id === produto.id
-      );
-  
-      if (produtoExistente) {
-        // Produto com o mesmo ID já existe, exibe uma mensagem de erro
-        props.setMensagem("Produto com o mesmo ID já existe!");
-        props.setTipoMensagem("danger");
-        props.setMostrarMensagem(true);
-      } else {
-        // Se o formulário for válido e o ID não estiver duplicado, realiza a ação de inclusão ou edição
         if (!props.modoEdicao) {
-          props.setListaProdutos([...props.listaProdutos, produto]);
-          props.setMensagem("Produto incluído com sucesso");
-          props.setTipoMensagem("success");
-          props.setMostrarMensagem(true);
+            // Verifica se o produto com o mesmo ID já existe na lista
+            const produtoExistente = props.listaProdutos.find(
+                (itemProduto) => itemProduto.id === produto.id
+            );
+
+            if (produtoExistente) {
+                // Produto com o mesmo ID já existe, exibe uma mensagem de erro
+                props.setMensagem("Produto com o mesmo ID já existe!");
+                props.setTipoMensagem("danger");
+                props.setMostrarMensagem(true);
+            } else {
+                // Adiciona o novo produto à lista
+                props.setListaProdutos([...props.listaProdutos, produto]);
+                props.setMensagem("Produto incluído com sucesso");
+                props.setTipoMensagem("success");
+                props.setMostrarMensagem(true);
+            }
         } else {
-          // Edita os dados do produto (filtrando e adicionando)
-          props.setListaProdutos([
-            ...props.listaProdutos.filter(
-              (itemProduto) => itemProduto.id !== produto.id
-            ),
-            produto,
-          ]);
-          props.setModoEdicao(false);
-          props.setProdutoParaEdicao(produtoVazio);
+            // Modo de edição - atualiza os dados do produto
+            const listaAtualizada = props.listaProdutos.map((itemProduto) => {
+                if (itemProduto.id === produto.id) {
+                    return produto; // Atualiza o produto com o mesmo ID
+                }
+                return itemProduto;
+            });
+
+            props.setListaProdutos(listaAtualizada);
+            props.setModoEdicao(false);
+            props.setProdutoParaEdicao(produtoVazio);
+            
+            // Define a mensagem de sucesso de atualização
+            props.setMensagem("Produto editado com sucesso");
+            props.setTipoMensagem("success");
+            props.setMostrarMensagem(true);
         }
-        setProduto(produtoVazio); // Limpa os campos do formulário ou sair da tela de formulário
+
+        setProduto(produtoVazio);
         setFormValidado(false);
-      }
     } else {
-      setFormValidado(true);
+        setFormValidado(true);
     }
+
     e.stopPropagation();
     e.preventDefault();
-  }
+}
+
+
 
   return (
     <Container>

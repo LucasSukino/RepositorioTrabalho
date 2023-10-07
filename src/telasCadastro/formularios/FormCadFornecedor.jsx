@@ -22,47 +22,55 @@ export default function FormCadFornecedor(props) {
   }
 
   // Função para lidar com a submissão do formulário
-function manipularSubmissao(e) {
-  const form = e.currentTarget;
-  if (form.checkValidity()) {
-    // Verifica se o fornecedor com o mesmo CNPJ já existe na lista
-    const fornecedorExistente = props.listaFornecedores.find(
-      (itemFornecedor) => itemFornecedor.cnpj === fornecedor.cnpj
-    );
+  function manipularSubmissao(e) {
+    const form = e.currentTarget;
+    if (form.checkValidity()) {
+        if (!props.modoEdicao) {
+            // Verifica se o fornecedor com o mesmo CNPJ já existe na lista
+            const fornecedorExistente = props.listaFornecedores.find(
+                (itemFornecedor) => itemFornecedor.cnpj === fornecedor.cnpj
+            );
 
-    if (fornecedorExistente) {
-      // Fornecedor com o mesmo CNPJ já existe, exibe uma mensagem de erro
-      props.setMensagem("Fornecedor com o mesmo CNPJ já existe!");
-      props.setTipoMensagem("danger");
-      props.setMostrarMensagem(true);
+            if (fornecedorExistente) {
+                // Fornecedor com o mesmo CNPJ já existe, exibe uma mensagem de erro
+                props.setMensagem("Fornecedor com o mesmo CNPJ já existe!");
+                props.setTipoMensagem("danger");
+                props.setMostrarMensagem(true);
+            } else {
+                // Adiciona o novo fornecedor à lista
+                props.setListaFornecedores([...props.listaFornecedores, fornecedor]);
+                props.setMensagem("Fornecedor incluído com sucesso");
+                props.setTipoMensagem("success");
+                props.setMostrarMensagem(true);
+            }
+        } else {
+            // Modo de edição - atualiza os dados do fornecedor
+            const listaAtualizada = props.listaFornecedores.map((itemFornecedor) => {
+                if (itemFornecedor.cnpj === fornecedor.cnpj) {
+                    return fornecedor; // Atualiza o fornecedor com o mesmo CNPJ
+                }
+                return itemFornecedor;
+            });
+
+            props.setListaFornecedores(listaAtualizada);
+            props.setModoEdicao(false);
+            props.setFornecedorParaEdicao(fornecedorVazio);
+
+            props.setMensagem("Fornecedor editado com sucesso");
+            props.setTipoMensagem("success");
+            props.setMostrarMensagem(true);
+        }
+
+        setFornecedor(fornecedorVazio);
+        setFormValidado(false);
     } else {
-      // Se o formulário for válido e o CNPJ não estiver duplicado, realiza a ação de inclusão ou edição
-      if (!props.modoEdicao) {
-        props.setListaFornecedores([...props.listaFornecedores, fornecedor]);
-        props.setMensagem("Fornecedor incluído com sucesso");
-        props.setTipoMensagem("success");
-        props.setMostrarMensagem(true);
-      } else {
-        // Alterar os dados do fornecedor (filtrar e adicionar)
-        props.setListaFornecedores([
-          ...props.listaFornecedores.filter(
-            (itemFornecedor) => itemFornecedor.cnpj !== fornecedor.cnpj
-          ),
-          fornecedor,
-        ]);
-        props.setModoEdicao(false);
-        props.setFornecedorParaEdicao(fornecedorVazio);
-      }
-      setFornecedor(fornecedorVazio); // Ou sair da tela de formulário
-      setFormValidado(false);
+        setFormValidado(true);
     }
-  } else {
-    setFormValidado(true);
-  }
 
-  e.stopPropagation();
-  e.preventDefault();
+    e.stopPropagation();
+    e.preventDefault();
 }
+
 
 
   return (

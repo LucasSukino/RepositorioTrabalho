@@ -22,49 +22,57 @@ export default function FormCadCliente(props) {
         setCliente({...cliente,[componente.name]:componente.value});
     }
 
-    // Função para lidar com a submissão do formulário
-function manipularSubmissao(e) {
-    const form = e.currentTarget;
-    if (form.checkValidity()) {
-      // Verifica se o cliente com o mesmo CPF já existe na lista
-      const clienteExistente = props.listaClientes.find(
-        (itemCliente) => itemCliente.cpf === cliente.cpf
-      );
-  
-      if (clienteExistente) {
-        // Cliente com o mesmo CPF já existe, exibe uma mensagem de erro
-        props.setMensagem("Cliente com o mesmo CPF já existe!");
-        props.setTipoMensagem("danger");
-        props.setMostrarMensagem(true);
-      } else {
-        // Se o formulário for válido e o CPF não estiver duplicado, realiza a ação de inclusão ou edição
-        if (!props.modoEdicao) {
-          props.setListaClientes([...props.listaClientes, cliente]);
-          props.setMensagem("Cliente incluído com sucesso");
-          props.setTipoMensagem("success");
-          props.setMostrarMensagem(true);
+    function manipularSubmissao(e) {
+        const form = e.currentTarget;
+        if (form.checkValidity()) {
+            if (!props.modoEdicao) {
+                // Verifica se o cliente com o mesmo CPF já existe na lista
+                const clienteExistente = props.listaClientes.find(
+                    (itemCliente) => itemCliente.cpf === cliente.cpf
+                );
+        
+                if (clienteExistente) {
+                    // Cliente com o mesmo CPF já existe, exibe uma mensagem de erro
+                    props.setMensagem("Cliente com o mesmo CPF já existe!");
+                    props.setTipoMensagem("danger");
+                    props.setMostrarMensagem(true);
+                } else {
+                    // Adiciona o novo cliente à lista
+                    props.setListaClientes([...props.listaClientes, cliente]);
+                    props.setMensagem("Cliente incluído com sucesso");
+                    props.setTipoMensagem("success");
+                    props.setMostrarMensagem(true);
+                }
+            } else {
+                // Modo de edição - atualiza os dados do cliente
+                const listaAtualizada = props.listaClientes.map((itemCliente) => {
+                    if (itemCliente.cpf === cliente.cpf) {
+                        return cliente; // Atualiza o cliente com o mesmo CPF
+                    }
+                    return itemCliente;
+                });
+        
+                props.setListaClientes(listaAtualizada);
+                props.setModoEdicao(false);
+                props.setClienteParaEdicao(clienteVazio);
+
+                props.setMensagem("Cliente editado com sucesso");
+                props.setTipoMensagem("success");
+                props.setMostrarMensagem(true);
+            }
+        
+            setCliente(clienteVazio);
+            setFormValidado(false);
         } else {
-          // Alterar os dados do cliente (filtrar e adicionar)
-          props.setListaClientes([
-            ...props.listaClientes.filter(
-              (itemCliente) => itemCliente.cpf !== cliente.cpf
-            ),
-            cliente,
-          ]);
-          props.setModoEdicao(false);
-          props.setClienteParaEdicao(clienteVazio);
+            setFormValidado(true);
         }
-        setCliente(clienteVazio); // Ou sair da tela de formulário
-        setFormValidado(false);
+        
+      
+        e.stopPropagation();
+        e.preventDefault();
       }
-    } else {
-      setFormValidado(true);
-    }
-  
-    e.stopPropagation();
-    e.preventDefault();
-  }
-  
+    
+      
 
     return (
         <Container>

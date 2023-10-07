@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Container, Form, Row, Col, FloatingLabel } from "react-bootstrap";
 
-export default function FormCadCategorias(props) {
-
-    const categoriaVazio = {
-        nome:'',
-        descricao:'',
-        subcategoria:''
-    }
-
+export default function FormCadCategoria(props) {
     const estadoInicialCategoria = props.categoriaParaEdicao;
     const [categoria, setCategoria] = useState(estadoInicialCategoria);
     const [formValidado, setFormValidado] = useState(false);
@@ -21,51 +14,34 @@ export default function FormCadCategorias(props) {
     function manipularSubmissao(e) {
         const form = e.currentTarget;
         if (form.checkValidity()) {
-            // Verifique se a categoria já existe
-            const categoriaExistente = props.listaCategorias.find(
-            (itemCategoria) => itemCategoria.nome === categoria.nome
-            );
-            if (!categoriaExistente || props.modoEdicao) {
-            // Verificar se a subcategoria já existe dentro da categoria atual
-            const subcategoriaExistente = props.listaCategorias.some(
-                (itemCategoria) =>
-                itemCategoria.nome === categoria.nome &&
-                itemCategoria.subcategoria === categoria.subcategoria
-            );
-            if (!subcategoriaExistente) {
-                if (props.modoEdicao) {
-                props.setListaCategorias((categorias) =>
-                    categorias.map((item) =>
-                    item.nome === categoria.nome ? categoria : item
-                    )
-                );
+            if (props.modoEdicao) {
+                // Modo de edição - atualiza os dados da categoria
+                const listaAtualizada = props.listaCategorias.map((itemCategoria) => {
+                    if (itemCategoria.nome === categoria.nome) {
+                        return categoria; // Atualiza a categoria com o mesmo nome
+                    }
+                    return itemCategoria;
+                });
+    
+                props.setListaCategorias(listaAtualizada);
                 props.setMensagem("Categoria editada com sucesso!");
-                } else {
+            } else {
+                // Adiciona a nova categoria à lista
                 props.setListaCategorias([...props.listaCategorias, categoria]);
                 props.setMensagem("Categoria cadastrada com sucesso!");
-                }
-                props.setTipoMensagem("success");
-                props.setMostrarMensagem(true);
-                setCategoria(estadoInicialCategoria);
-                props.setModoEdicao(false);
-            } else {
-                // Exibir mensagem de erro se a subcategoria já existe
-                props.setMensagem("Subcategoria já existe nesta categoria.");
-                props.setTipoMensagem("danger");
-                props.setMostrarMensagem(true);
             }
-            } else {
-            // Exibir mensagem de erro se a categoria já existe
-            props.setMensagem("Categoria já existe.");
-            props.setTipoMensagem("danger");
+            props.setTipoMensagem("success");
             props.setMostrarMensagem(true);
-            }
+            setCategoria(estadoInicialCategoria);
+            props.setModoEdicao(false);
         } else {
             setFormValidado(true);
         }
         e.stopPropagation();
         e.preventDefault();
     }
+        
+    
 return (
     <Container>
         <Form noValidate validated={formValidado} onSubmit={manipularSubmissao}>
@@ -114,16 +90,15 @@ return (
             </Col>
         </Row>
         <Row>
-                    <Col md={6} offset={5} className="d-flex justify-content-end">
-                        <Button type="submit" variant={"primary"}>{props.modoEdicao ? "Alterar":"Cadastrar"}</Button>
-                    </Col>
-                    <Col md={6} offset={5}>
-                        <Button type="button" variant={"secondary"} onClick={() => {
-                                props.exibirFormulario(false)
-                            }
-                        }>Voltar</Button>
-                    </Col>
-                </Row>
+            <Col md={6} offset={5} className="flex justify-content-end">
+                    <Button type="submit" variant={"primary"}>{props.modoEdicao ? "Alterar":"Cadastrar"}</Button>
+            </Col>
+            <Col md={6} offset={5}>
+                <Button type="button" variant={"secondary"} onClick={()=>{
+                    props.exibirFormulario(false)
+                    }}>Voltar</Button>
+            </Col>
+        </Row>
         </Form>
     </Container>
 );
