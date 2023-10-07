@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/RepositorioTrabalho/static/css/main.99e4cf39.css",
-    "main.js": "/RepositorioTrabalho/static/js/main.7daee292.js",
+    "main.js": "/RepositorioTrabalho/static/js/main.21787e0d.js",
     "index.html": "/RepositorioTrabalho/index.html",
     "main.99e4cf39.css.map": "/RepositorioTrabalho/static/css/main.99e4cf39.css.map",
-    "main.7daee292.js.map": "/RepositorioTrabalho/static/js/main.7daee292.js.map"
+    "main.21787e0d.js.map": "/RepositorioTrabalho/static/js/main.21787e0d.js.map"
   },
   "entrypoints": [
     "static/css/main.99e4cf39.css",
-    "static/js/main.7daee292.js"
+    "static/js/main.21787e0d.js"
   ]
 }
