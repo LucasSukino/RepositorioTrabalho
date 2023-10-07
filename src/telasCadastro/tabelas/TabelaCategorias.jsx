@@ -26,7 +26,6 @@ export default function TabelaCategorias(props) {
                     <th>Nome</th>
                     <th>Descrição</th>
                     <th>Subcategoria</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
                 <tbody>
