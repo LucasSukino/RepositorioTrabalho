@@ -21,10 +21,22 @@ export default function FormCadFornecedor(props) {
     setFornecedor({ ...fornecedor, [componente.name]: componente.value });
   }
 
-  function manipularSubmissao(e) {
-    const form = e.currentTarget;
-    if (form.checkValidity()) {
-      // Todos os campos preenchidos, enviar dados para o backend ou atualizar na lista de fornecedores
+  // Função para lidar com a submissão do formulário
+function manipularSubmissao(e) {
+  const form = e.currentTarget;
+  if (form.checkValidity()) {
+    // Verifica se o fornecedor com o mesmo CNPJ já existe na lista
+    const fornecedorExistente = props.listaFornecedores.find(
+      (itemFornecedor) => itemFornecedor.cnpj === fornecedor.cnpj
+    );
+
+    if (fornecedorExistente) {
+      // Fornecedor com o mesmo CNPJ já existe, exibe uma mensagem de erro
+      props.setMensagem("Fornecedor com o mesmo CNPJ já existe!");
+      props.setTipoMensagem("danger");
+      props.setMostrarMensagem(true);
+    } else {
+      // Se o formulário for válido e o CNPJ não estiver duplicado, realiza a ação de inclusão ou edição
       if (!props.modoEdicao) {
         props.setListaFornecedores([...props.listaFornecedores, fornecedor]);
         props.setMensagem("Fornecedor incluído com sucesso");
@@ -43,13 +55,15 @@ export default function FormCadFornecedor(props) {
       }
       setFornecedor(fornecedorVazio); // Ou sair da tela de formulário
       setFormValidado(false);
-    } else {
-      setFormValidado(true);
     }
-
-    e.stopPropagation();
-    e.preventDefault();
+  } else {
+    setFormValidado(true);
   }
+
+  e.stopPropagation();
+  e.preventDefault();
+}
+
 
   return (
     <Container>
@@ -177,14 +191,34 @@ export default function FormCadFornecedor(props) {
                 name="uf"
                 onChange={manipularMudancas}
                 value={fornecedor.uf}
-                required
-              >
-                {/* Aqui você pode listar todas as UF desejadas */}
-                <option value="SP" selected>
-                  São Paulo
-                </option>
-                <option value="AC">Acre</option>
-                {/* Adicione as demais opções de UF aqui */}
+                requerid>
+                                <option value="SP" selected>São Paulo</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
               </Form.Select>
             </FloatingLabel>
           </Col>

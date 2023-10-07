@@ -5,6 +5,7 @@ import TelaMenu from "./telasCadastro/TelaMenu";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TabelaCategoriasProduto from "./telasCadastro/tabelas/TabelaCategorias";
 import TelaCadastroFornecedor from "./telasCadastro/TelaCadastroFornecedor";
+import TelaCadastroCategoria from "./telasCadastro/TelaCadastroCategoria";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           }
           <Route path="/clientes" element={<TelaCadastroCliente/>} />
           <Route path="/produtos" element={<TelaCadastroProduto/>} />
+          <Route path="/categorias" element={<TelaCadastroCategoria/>} />
           <Route path="/" element={<TelaMenu/>}/>  
           {
             <Route path="/fornecedores" element={<TelaCadastroFornecedor/>} />

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, Form, Row, Col, FloatingLabel } from "react-bootstrap";
 
-export default function FormCadCategoriaProduto(props) {
-    const categoriaVazia = {
-        nome: '',
-        descricao: '',
-        // Outros campos relacionados à categoria de produto
-    };
+export default function FormCadCategorias(props) {
+
+    const categoriaVazio = {
+        nome:'',
+        descricao:'',
+        subcategoria:''
+    }
 
     const estadoInicialCategoria = props.categoriaParaEdicao;
     const [categoria, setCategoria] = useState(estadoInicialCategoria);
@@ -20,86 +21,110 @@ export default function FormCadCategoriaProduto(props) {
     function manipularSubmissao(e) {
         const form = e.currentTarget;
         if (form.checkValidity()) {
-            // Todos os campos preenchidos
-            // Enviar os dados da categoria para o backend
-            if (!props.modoEdicao) {
+            // Verifique se a categoria já existe
+            const categoriaExistente = props.listaCategorias.find(
+            (itemCategoria) => itemCategoria.nome === categoria.nome
+            );
+            if (!categoriaExistente || props.modoEdicao) {
+            // Verificar se a subcategoria já existe dentro da categoria atual
+            const subcategoriaExistente = props.listaCategorias.some(
+                (itemCategoria) =>
+                itemCategoria.nome === categoria.nome &&
+                itemCategoria.subcategoria === categoria.subcategoria
+            );
+            if (!subcategoriaExistente) {
+                if (props.modoEdicao) {
+                props.setListaCategorias((categorias) =>
+                    categorias.map((item) =>
+                    item.nome === categoria.nome ? categoria : item
+                    )
+                );
+                props.setMensagem("Categoria editada com sucesso!");
+                } else {
                 props.setListaCategorias([...props.listaCategorias, categoria]);
-                props.setMensagem('Categoria incluída com sucesso');
-                props.setTipoMensagem('success');
+                props.setMensagem("Categoria cadastrada com sucesso!");
+                }
+                props.setTipoMensagem("success");
                 props.setMostrarMensagem(true);
-            } else {
-                // Alterar os dados da categoria (filtra e adiciona)
-                props.setListaCategorias([...props.listaCategorias.filter((itemCategoria) => itemCategoria.id !== categoria.id), categoria]);
+                setCategoria(estadoInicialCategoria);
                 props.setModoEdicao(false);
-                props.setCategoriaParaEdicao(categoriaVazia);
+            } else {
+                // Exibir mensagem de erro se a subcategoria já existe
+                props.setMensagem("Subcategoria já existe nesta categoria.");
+                props.setTipoMensagem("danger");
+                props.setMostrarMensagem(true);
             }
-            setCategoria(categoriaVazia);
-            setFormValidado(false);
+            } else {
+            // Exibir mensagem de erro se a categoria já existe
+            props.setMensagem("Categoria já existe.");
+            props.setTipoMensagem("danger");
+            props.setMostrarMensagem(true);
+            }
         } else {
             setFormValidado(true);
         }
-
         e.stopPropagation();
         e.preventDefault();
     }
-
-    return (
-        <Container>
-            <Form noValidate validated={formValidado} onSubmit={manipularSubmissao}>
-                <Row>
-                    <Col>
-                        <Form.Group>
-                            <FloatingLabel
-                                label="Nome da Categoria:"
-                                className="mb-3"
-                            >
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Informe o nome da categoria"
-                                    id="nome"
-                                    name="nome"
-                                    value={categoria.nome}
-                                    onChange={manipularMudancas}
-                                    required
-                                />
-                            </FloatingLabel>
-                            <Form.Control.Feedback type="invalid">Informe o nome da categoria!</Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Group>
-                            <FloatingLabel
-                                label="Descrição:"
-                                className="mb-3"
-                            >
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Informe a descrição da categoria"
-                                    id="descricao"
-                                    name="descricao"
-                                    value={categoria.descricao}
-                                    onChange={manipularMudancas}
-                                    required
-                                />
-                            </FloatingLabel>
-                            <Form.Control.Feedback type="invalid">Informe a descrição da categoria!</Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                {/* Adicione mais campos para a categoria de produto conforme necessário */}
-                <Row>
+return (
+    <Container>
+        <Form noValidate validated={formValidado} onSubmit={manipularSubmissao}>
+        <Row>
+            <Col>
+            <Form.Group>
+                <FloatingLabel label="Nome da Categoria" className="mb-3">
+                <Form.Control
+                    type="text"
+                    name="nome"
+                    value={categoria.nome}
+                    onChange={manipularMudancas}
+                    required
+                />
+                </FloatingLabel>
+                <Form.Control.Feedback type="invalid">
+                Informe o nome!
+                </Form.Control.Feedback>
+            </Form.Group>
+            </Col>
+            <Col>
+            <Form.Group>
+                <FloatingLabel label="Descrição" className="mb-3">
+                <Form.Control
+                    type="text"
+                    name="descricao"
+                    value={categoria.descricao}
+                    onChange={manipularMudancas}
+                />
+                </FloatingLabel>
+            </Form.Group>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+            <Form.Group>
+                <FloatingLabel label="Subcategoria" className="mb-3">
+                <Form.Control
+                    type="text"
+                    name="subcategoria"
+                    value={categoria.subcategoria}
+                    onChange={manipularMudancas}
+                />
+                </FloatingLabel>
+            </Form.Group>
+            </Col>
+        </Row>
+        <Row>
                     <Col md={6} offset={5} className="d-flex justify-content-end">
-                        <Button type="submit" variant={props.modoEdicao ? "primary" : "success"}>{props.modoEdicao ? "Alterar" : "Cadastrar"}</Button>
+                        <Button type="submit" variant={"primary"}>{props.modoEdicao ? "Alterar":"Cadastrar"}</Button>
                     </Col>
                     <Col md={6} offset={5}>
                         <Button type="button" variant={"secondary"} onClick={() => {
-                            props.exibirFormulario(false);
-                        }}>Voltar</Button>
+                                props.exibirFormulario(false)
+                            }
+                        }>Voltar</Button>
                     </Col>
                 </Row>
-            </Form>
-        </Container>
-    );
+        </Form>
+    </Container>
+);
 }

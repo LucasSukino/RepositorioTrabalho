@@ -22,34 +22,49 @@ export default function FormCadCliente(props) {
         setCliente({...cliente,[componente.name]:componente.value});
     }
 
-    function manipularSubmissao(e){
-        const form = e.currentTarget; 
-        if (form.checkValidity()){
-            //todos os campos preenchidos
-            //mandar os dados para o backend
-            if(!props.modoEdicao){
-                props.setListaClientes([...props.listaClientes,cliente]);
-                props.setMensagem('Cliente incluído com sucesso');
-                props.setTipoMensagem('success');
-                props.setMostrarMensagem(true);
-            }
-            else{
-                //alterar os dados do cliente (filtra e adiciona)
-
-                props.setListaClientes([...props.listaClientes.filter((itemCliente)=>itemCliente.cpf !== cliente.cpf),cliente]);
-                props.setModoEdicao(false);
-                props.setClienteParaEdicao(clienteVazio);                
-            }
-            setCliente(clienteVazio); // ou sair da tela de formulário 
-            setFormValidado(false);
+    // Função para lidar com a submissão do formulário
+function manipularSubmissao(e) {
+    const form = e.currentTarget;
+    if (form.checkValidity()) {
+      // Verifica se o cliente com o mesmo CPF já existe na lista
+      const clienteExistente = props.listaClientes.find(
+        (itemCliente) => itemCliente.cpf === cliente.cpf
+      );
+  
+      if (clienteExistente) {
+        // Cliente com o mesmo CPF já existe, exibe uma mensagem de erro
+        props.setMensagem("Cliente com o mesmo CPF já existe!");
+        props.setTipoMensagem("danger");
+        props.setMostrarMensagem(true);
+      } else {
+        // Se o formulário for válido e o CPF não estiver duplicado, realiza a ação de inclusão ou edição
+        if (!props.modoEdicao) {
+          props.setListaClientes([...props.listaClientes, cliente]);
+          props.setMensagem("Cliente incluído com sucesso");
+          props.setTipoMensagem("success");
+          props.setMostrarMensagem(true);
+        } else {
+          // Alterar os dados do cliente (filtrar e adicionar)
+          props.setListaClientes([
+            ...props.listaClientes.filter(
+              (itemCliente) => itemCliente.cpf !== cliente.cpf
+            ),
+            cliente,
+          ]);
+          props.setModoEdicao(false);
+          props.setClienteParaEdicao(clienteVazio);
         }
-        else{
-            setFormValidado(true);
-        }
-
-        e.stopPropagation();
-        e.preventDefault();
+        setCliente(clienteVazio); // Ou sair da tela de formulário
+        setFormValidado(false);
+      }
+    } else {
+      setFormValidado(true);
     }
+  
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  
 
     return (
         <Container>
